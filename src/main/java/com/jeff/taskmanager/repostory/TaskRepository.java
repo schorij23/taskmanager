@@ -1,4 +1,4 @@
-package com.jeff.taskmanager.repository;
+package com.jeff.taskmanager.repostory;
 
 import com.jeff.taskmanager.model.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
