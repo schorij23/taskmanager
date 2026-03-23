@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+</head>
+<body>
+
+<h1>Task Manager</h1>
+
+<h3>Add Task</h3>
+<input id="title" placeholder="Title">
+<input id="description" placeholder="Description">
+<button onclick="addTask()">Add</button>
+
+<h3>Tasks</h3>
+<ul id="taskList"></ul>
+
+<script>
+    const API_URL = "http://localhost:8080/api/tasks";
+
+    // Load tasks
+    function loadTasks() {
+        fetch(API_URL)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("taskList");
+                list.innerHTML = "";
+
+                data.forEach(task => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        ${task.title} - ${task.description}
+                        <button onclick="deleteTask(${task.id})">Delete</button>
+                    `;
+                    list.appendChild(li);
+                });
+            });
+    }
+
+    // Add task
+    function addTask() {
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+
+        fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                title,
+                description,
+                completed: false
+            })
+        }).then(() => {
+            loadTasks();
+        });
+    }
+
+    // Delete task
+    function deleteTask(id) {
+        fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        }).then(() => {
+            loadTasks();
+        });
+    }
+
+    // Initial load
+    loadTasks();
+</script>
+
+</body>
+</html>
